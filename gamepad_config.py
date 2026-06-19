@@ -37,60 +37,38 @@ GAMEPAD_MAP = {
         17: "DPY"
     }
 
-
-#---------Variables-------------------
-
-gamepad_output = {
-        # Botões Clicaveis
-        "A": 0,
-        "X": 0,
-        "Y": 0,
-        "B": 0,
-        "L1": 0,
-        "R1": 0,
-        "Select": 0,
-        "Start": 0,
-        "L6": 0,
-        "R6": 0,
-
-        # Gatilhos
-        "L2": 0,
-        "R2": 0,
-
-        # Analogicos
-        "LAX": 0,
-        "LAY": 0,
-        "RAX": 0,
-        "RAY": 0,
-
-        "DPX": 0,
-        "DPY": 0
-    }
-
-gamepad = InputDevice("/dev/input/event10")
-
-#print(gamepad.capabilities())
-
 #----------Functions------------------
 
 # Controle da Zona morta dos analogicos
-def config_dead_Zone(dead_zone_range, dead_zone_inputs, event_code, state):
+def config_dead_zone(dead_zone_range, dead_zone_inputs, event):
 
-    if event_code in dead_zone_inputs:
-        if abs(state) <= dead_zone_range: state = 0
+    state = event.value
+
+    if event.code in dead_zone_inputs:
+        if abs(event.value) <= dead_zone_range: state = 0
 
     return state
 
 #Leitura e mapeamento dos botẽos baseado nos codigos
-def read_event(gamepad_map, event_code, state):
+def read_event(gamepad_map, event):
 
-    if event_code in gamepad_map:
+    if event.code in gamepad_map:
 
-        new_state = config_dead_Zone(DEAD_ZONE_RANGE, DEAD_ZONE_INPUTS, event_code, state)
+        if event.type == ecodes.EV_ABS:
 
-        button = gamepad_map.get(event_code, "")
+            state = config_dead_zone(DEAD_ZONE_RANGE, DEAD_ZONE_INPUTS, event)
 
-        return button, new_state
+        elif event.type == ecodes.EV_KEY:
+
+            state = event.value
+
+        else:
+
+            state = None
+
+        button = gamepad_map.get(event.code, "")
+
+        return button, state
     else:
         return None, None
 
@@ -99,11 +77,17 @@ def read_event(gamepad_map, event_code, state):
 
 def main():
 
+    gamepad_output = {}
+
+    gamepad = InputDevice("/dev/input/event10")
+
+    print(gamepad.capabilities())
+
     for event in gamepad.read_loop():
         
         #os.system("clear")
 
-        button, state = read_event(GAMEPAD_MAP, event.code, event.value)
+        button, state = read_event(GAMEPAD_MAP, event)
 
         if button is None or state is None: continue
 
