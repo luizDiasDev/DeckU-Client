@@ -98,9 +98,3 @@ class Gamepad:
             if abs(event.value) <= self.DEAD_ZONE_RANGE: state = 0
 
         return state
-
-
-
-my_gamepad = Gamepad("/dev/input/event10")
-
-my_gamepad.run()
