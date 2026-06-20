@@ -3,97 +3,104 @@ import os
 import time
 
 
-#-----------Constants-----------------
+class Gamepad:
+    """
+    Lê e interpreta eventos de um controle físico 
+    """
 
-DEAD_ZONE_RANGE = 1500
+    DEAD_ZONE_RANGE = 2000
 
-DEAD_ZONE_INPUTS = {0,1,3,4}
+    DEAD_ZONE_INPUTS = {0,1,3,4}
 
-GAMEPAD_MAP = {
-        # Botões Clicáveis
-        304: "A",
-        307: "X",
-        308: "Y",
-        305: "B",
-        310: "L1",
-        311: "R1",
-        314: "Select",
-        315: "Start",
-        317: "L6",
-        318: "R6",
+    GAMEPAD_MAP = {
+            # Botões Clicáveis
+            304: "A",
+            307: "X",
+            308: "Y",
+            305: "B",
+            310: "L1",
+            311: "R1",
+            314: "Select",
+            315: "Start",
+            317: "L6",
+            318: "R6",
 
-        # Gatilhos
-        2: "L2",
-        5: "R2",
+            # Gatilhos
+            2: "L2",
+            5: "R2",
 
-        # Analógicos
-        0: "LAX",
-        1: "LAY",
-        3: "RAX",
-        4: "RAY",
+            # Analógicos
+            0: "LAX",
+            1: "LAY",
+            3: "RAX",
+            4: "RAY",
 
-        #D-pad
-        16: "DPX",
-        17: "DPY"
-    }
+            #D-pad
+            16: "DPX",
+            17: "DPY"
+        }
 
-#----------Functions------------------
 
-# Controle da Zona morta dos analogicos
-def config_dead_zone(dead_zone_range, dead_zone_inputs, event):
+    def __init__(self, device_path):
+        self.device_path = device_path
+        self.gamepad_output = {}
+        self.gamepad = InputDevice(self.device_path)
 
-    state = event.value
+    def run(self):
+        """
+        Executa a leitura do Controle
+        """
 
-    if event.code in dead_zone_inputs:
-        if abs(event.value) <= dead_zone_range: state = 0
+        for event in self.gamepad.read_loop():
 
-    return state
+            button, state = self._read_event(event)
 
-#Leitura e mapeamento dos botẽos baseado nos codigos
-def read_event(gamepad_map, event):
+            if button is None or state is None: continue
 
-    if event.code in gamepad_map:
+            self.gamepad_output[button] = state
 
-        if event.type == ecodes.EV_ABS:
+            print(self.gamepad_output)
 
-            state = config_dead_zone(DEAD_ZONE_RANGE, DEAD_ZONE_INPUTS, event)
 
-        elif event.type == ecodes.EV_KEY:
+    def _read_event(self, event):
+        """
+        Leitura e mapeamento dos botẽos baseado nos codigos
+        """
 
-            state = event.value
+        if event.code in self.GAMEPAD_MAP:
 
+            if event.type == ecodes.EV_ABS:
+
+                state = self._config_dead_zone(event)
+
+            elif event.type == ecodes.EV_KEY:
+
+                state = event.value
+
+            else:
+
+                state = None
+
+            button = self.GAMEPAD_MAP.get(event.code, "")
+
+            return button, state
         else:
+            return None, None
 
-            state = None
+    def _config_dead_zone(self, event):
+        """
+        Controle da Zona morta dos analogicos
+        """
 
-        button = gamepad_map.get(event.code, "")
+        state = event.value
 
-        return button, state
-    else:
-        return None, None
+        if event.code in self.DEAD_ZONE_INPUTS:
+            if abs(event.value) <= self.DEAD_ZONE_RANGE: state = 0
+
+        return state
 
 
-#----------Exec----------------
 
-def main():
+my_gamepad = Gamepad("/dev/input/event10")
 
-    gamepad_output = {}
-
-    gamepad = InputDevice("/dev/input/event10")
-
-    print(gamepad.capabilities())
-
-    for event in gamepad.read_loop():
-        
-        #os.system("clear")
-
-        button, state = read_event(GAMEPAD_MAP, event)
-
-        if button is None or state is None: continue
-
-        gamepad_output[button] = state
-
-        print(gamepad_output)
-
-main()
-
+my_gamepad.run()
