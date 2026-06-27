@@ -8,9 +8,9 @@ class Gamepad:
     Lê e interpreta eventos de um controle físico 
     """
 
-    DEAD_ZONE_RANGE = 2000
+    DEAD_ZONE_RANGE = 2000 # Valor calibrado manualmente para o Steam Deck, pode variar entre unidades
 
-    DEAD_ZONE_INPUTS = {0,1,3,4}
+    DEAD_ZONE_INPUTS = {0,1,3,4} # Códigos referentes aos eixos analógicos do controle
 
     GAMEPAD_MAP = {
             # Botões Clicáveis
@@ -45,7 +45,7 @@ class Gamepad:
         self.device_path = device_path
         self.gamepad_output = {}
         self.gamepad = InputDevice(self.device_path)
-        self.callback = callback
+        self.callback = callback # Função chamada a cada mudança de estado do controle  recebendo gamepad_output como argumento
 
     def run(self):
         """
