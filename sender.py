@@ -1,4 +1,5 @@
 import socket
+import json
 
 class Sender:
 
@@ -8,7 +9,7 @@ class Sender:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
     def send(self, data):
-        self.sock.sendto(data, (self.ip, self.port))
+        self.sock.sendto(json.dumps(data).encode("utf-8"), (self.ip, self.port))
 
     def close(self):
         self.sock.close()
