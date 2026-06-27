@@ -1,12 +1,18 @@
 from gamepad import Gamepad
 from sender import Sender
 
-class Main:
 
-    deck_gamepad = Gamepad("/dev/input/event10")
+def main():
+
+    data_sender = Sender("192.168.100.54", 5005)
+
+    def callback(data):
+    
+        data_sender.send(data)
+
+    deck_gamepad = Gamepad("/dev/input/event10", callback)
 
     deck_gamepad.run()
 
-    #data_sender = Sender("", 0)
-
-    #data_sender.send(b"")
+if __name__ == "__main__":
+    main()
