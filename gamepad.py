@@ -41,10 +41,11 @@ class Gamepad:
         }
 
 
-    def __init__(self, device_path):
+    def __init__(self, device_path, callback):
         self.device_path = device_path
         self.gamepad_output = {}
         self.gamepad = InputDevice(self.device_path)
+        self.callback = callback
 
     def run(self):
         """
@@ -59,7 +60,7 @@ class Gamepad:
 
             self.gamepad_output[button] = state
 
-            print(self.gamepad_output)
+            self.callback(self.gamepad_output)
 
 
     def _read_event(self, event):
