@@ -12,7 +12,7 @@ Este repositório contém o **cliente**, que roda no Steam Deck. Ele é respons�
 
 ## 💡 Sobre o projeto
 
-A ideia surgiu como um desafio pessoal de aprendizado (transformar o Deck em um controle + segunda tela pro PC, ao estilo do GamePad do WiiU) para sair da zona de conforto e aprender programação na prática — sockets, leitura de hardware, POO, boas práticas, tudo isso construído do zero, sem tutorial pronto pra seguir.
+A ideia surgiu como um desafio pessoal de aprendizado para sair da zona de conforto e aprender programação na prática — sockets, leitura de hardware, POO, boas práticas, tudo isso construído do zero, sem tutorial pronto pra seguir.
 
 ---
 
