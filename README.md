@@ -1,5 +1,9 @@
 <img width="1640" height="856" alt="deckullt" src="https://github.com/user-attachments/assets/a29deb14-6a4d-4f89-8b7d-0018f05ef310" />
 
+
+https://github.com/user-attachments/assets/544cfba0-743e-483d-837c-1a5357ea8593
+
+
 # DeckU - Client
 
 Parte do projeto **DeckU**: transformar um Steam Deck em um controle e uma segunda tela estilo WiiU GamePad para o PC.
